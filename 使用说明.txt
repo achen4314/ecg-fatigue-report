@@ -1,0 +1,26 @@
+ecg-fatigue-report 技能包
+========================
+用途：学员 Apple Watch 单导联心电图(30s/份) → 波形数字化 → HRV 疲劳分析 → 教练版+学员版双报告
+来源：Hermes 技能库 skills/sports/ecg-fatigue-report（2026-10，连晨阳 10 份样本跑通）
+
+管线顺序（scripts/ 内）：
+  1) digitize.py           PDF → metrics.json（行拆分、R峰检出、RR/HRV 指标）
+  2) charts.py             主图 fig2-7（AUDIENCE=coach|student 环境变量切换措辞）
+     charts_deep.py        逐搏级图 fig8-14
+     annotated.py          三段标注心电图 fig6
+     annotated_deep.py     全10段逐跳标注/单搏解剖/RR直方图 fig15-17
+  3) build_html.py         教练版 report.html
+     build_html_student.py 学员版 report_student.html
+  4) print_ecg.js / print_ecg_student.js   出 A4 PDF + 2x 长图 PNG（puppeteer-core + Edge）
+
+路径常量（换机器/换学员时需改）：
+  - 各脚本内 A = 附件目录（本机 %LOCALAPPDATA%\hermes\attachments）
+  - B/OUT = 资产输出目录（本机 %LOCALAPPDATA%\Temp\ecg_work\build）
+  - L = 文献图目录（lit_figs/，已随包附上 Munoz/Schneider 4 张 OA 原图）
+  - print_*.js 内 Edge 路径：C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe
+
+运行环境：hermes venv 的 python（含 pymupdf/matplotlib/numpy），puppeteer-core 在
+  %LOCALAPPDATA%\Temp\vork_demo\pw；缺 matplotlib 用清华源 pip 安装。
+
+方法学与坑（四重验证、TE/SWC 阈值、双版本口径等）详见 SKILL.md。
+样板交付：桌面 连晨阳-一周疲劳报告\ 文件夹（双版本三件套+CSV）。
